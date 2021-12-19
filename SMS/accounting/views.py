@@ -3,8 +3,8 @@ from django.shortcuts import redirect, render
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, FormView, UpdateView
-from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse_lazy
 from django.db import IntegrityError
 from django.db.models import Sum
 
@@ -68,7 +68,8 @@ class IncomeCategoryExportView(LoginRequiredMixin, View):
 
     def get(self, request):
         resource = IncomeCategoryResource()
-        dataset = resource.export()
+        queryset = IncomeCategoryModel.objects.filter(user= request.user)
+        dataset = resource.export(queryset)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="income-category.xlsx"'
         return response
@@ -110,7 +111,8 @@ class ExpenseCategoryExportView(LoginRequiredMixin, View):
 
     def get(self, request):
         resource = ExpenseCategoryResource()
-        dataset = resource.export()
+        queryset = ExpenseCategoryModel.objects.filter(user= request.user)
+        dataset = resource.export(queryset)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="expense-category.xlsx"'
         return response
@@ -152,7 +154,8 @@ class MembersVenderExportView(LoginRequiredMixin, View):
 
     def get(self, request):
         resource = MemberVenderDetailResource()
-        dataset = resource.export()
+        queryset = MemberVenderDetailModel.objects.filter(user= request.user)
+        dataset = resource.export(queryset)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="member-vendor.xlsx"'
         return response
@@ -194,7 +197,8 @@ class MemberDetailsExportView(LoginRequiredMixin, View):
 
     def get(self, request):
         resource = SocietyMemberDetailsResource()
-        dataset = resource.export()
+        queryset = SocietyMemberDetailsModel.objects.filter(user= request.user)
+        dataset = resource.export(queryset)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="society-members.xlsx"'
         return response
@@ -357,7 +361,8 @@ class IncomeExpenseLedgerExportView(LoginRequiredMixin, View):
 
     def get(self, request):
         resource = IncomeExpenseLedgerResource()
-        dataset = resource.export()
+        queryset = IncomeExpenseLedgerModel.objects.filter(user= request.user)
+        dataset = resource.export(queryset)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="income-expense-ledger.xlsx"'
         return response

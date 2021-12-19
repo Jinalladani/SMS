@@ -18,7 +18,13 @@ function getCookie(name) {
 
 
 $(document).ready(() => {
-    $('.dateinput').datepicker({ format: "yyyy-mm-dd" });
+    // $('.dateinput').datepicker({ format: "yyyy-mm-dd" });
+    let element_date = $('.dateinput') 
+    if(element_date.length){
+        element_date.addClass("form-control")
+        element_date.removeClass("dateinput")
+        element_date.get(0).type = "date" 
+    }
 
     $(document).on('click', '.delete-record', function (event) {
         let url = this.href;

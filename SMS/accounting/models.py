@@ -70,6 +70,9 @@ class SocietyMemberDetailsModel(TimeStampedModel):
     def __str__(self) -> str:
         return self.primary_name
 
+def user_directory_path(instance, filename):
+    return f'leger_file_{instance.ledger_record.user.society_name}/{filename}' 
+
 class IncomeExpenseLedgerModel(TimeStampedModel):
     ACCOUNT_TYPE = (
         ("cash", "Cash"),
@@ -101,4 +104,4 @@ class IncomeExpenseLedgerModel(TimeStampedModel):
 
 class LedgerFile(TimeStampedModel):
     ledger_record = models.ForeignKey('accounting.IncomeExpenseLedgerModel', related_name='LedgerFile', on_delete=models.CASCADE, blank=True, null=True)
-    file = models.FileField(upload_to='files/', verbose_name='Income expense ledger file')
+    file = models.FileField(upload_to=user_directory_path, verbose_name='Income expense ledger file')
