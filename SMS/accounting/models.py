@@ -23,8 +23,8 @@ class IncomeCategoryModel(TimeStampedModel):
 
 class BalanceModel(TimeStampedModel):
     ACCOUNT_TYPE = (
-        ("cash", "Cash"),
-        ("bank", "Bank"),
+        ("Cash", "Cash"),
+        ("Bank", "Bank"),
     )
     user = models.ForeignKey('authentication.User', related_name='Balance', on_delete=models.CASCADE, blank=True, null=True)
     account = models.CharField(max_length = 20,choices = ACCOUNT_TYPE)
@@ -58,12 +58,11 @@ class SocietyMemberDetailsModel(TimeStampedModel):
     secondary_contact_no = models.CharField(max_length=10, null=True, blank=True)
     accounting_name = models.CharField(max_length=200, null=True, blank=True)
     whatsapp_contact_no = models.CharField(max_length=10, null=True, blank=True)
-    email = models.EmailField()
-    residence = models.CharField(max_length=100, choices=RESIDENCE)
+    email = models.EmailField(null=True)
+    residence = models.CharField(max_length=100, choices=RESIDENCE, null=True)
 
     class Meta:
         unique_together = (
-            ('user', 'email'),
             ('user', 'flat_no')
         )
 
@@ -75,16 +74,16 @@ def user_directory_path(instance, filename):
 
 class IncomeExpenseLedgerModel(TimeStampedModel):
     ACCOUNT_TYPE = (
-        ("cash", "Cash"),
-        ("bank", "Bank"),
+        ("Cash", "Cash"),
+        ("Bank", "Bank"),
     )
 
     TYPE = (
         ("","----------"),
-        ("income", "Income"),
-        ("expense", "Expense"),
-        ("cash-withdrawal", "Cash Withdrawal"),
-        ("cash-deposit", "Cash Deposit")
+        ("Income", "Income"),
+        ("Expense", "Expense"),
+        ("CASH OUT", "CASH OUT"),
+        ("CASH IN", "CASH IN")
     )
     
     user = models.ForeignKey('authentication.User', related_name='IncomeExpenseLedger', on_delete=models.CASCADE, blank=True, null=True)

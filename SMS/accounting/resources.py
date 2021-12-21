@@ -28,4 +28,4 @@ class SocietyMemberDetailsResource(resources.ModelResource):
 class IncomeExpenseLedgerResource(resources.ModelResource):
     class Meta:
         model = IncomeExpenseLedgerModel
-        exclude = ('id', 'file','created', 'modified', 'user')
+        exclude = ('id', 'file','created', 'modified', 'user', 'opening_balance_cash', 'closing_balance_cash', 'opening_balance_bank', 'closing_balance_bank')

@@ -141,47 +141,79 @@ class IncomeExpenseLedgerListJSON(BaseDatatableView):
 class ImportExcelApiView(APIView):
 
     def add_balance_cash(self, request, transaction_type, amount, income_or_expense):
-        if(income_or_expense == "income"):
-            if transaction_type == "cash":
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="cash").first()
+        if(income_or_expense == "Income"):
+            if transaction_type == "Cash":
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Cash").first()
                 balance_model_instance.balance_amount += amount
                 balance_model_instance.save()
                 closing_balance_cash = balance_model_instance.balance_amount
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-            elif transaction_type == "bank":
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="bank").first()
+            elif transaction_type == "Bank":
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Bank").first()
                 balance_model_instance.balance_amount += amount
                 balance_model_instance.save()
                 closing_balance_bank = balance_model_instance.balance_amount
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-        elif(income_or_expense == "expense"):
-            if transaction_type == "cash":
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="cash").first()
+        elif(income_or_expense == "Expense"):
+            if transaction_type == "Cash":
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Cash").first()
                 balance_model_instance.balance_amount -= amount
                 balance_model_instance.save()
                 closing_balance_cash = balance_model_instance.balance_amount
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-            elif transaction_type == "bank":
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="bank").first()
+            elif transaction_type == "Bank":
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Bank").first()
                 balance_model_instance.balance_amount -= amount
                 balance_model_instance.save()
                 closing_balance_bank = balance_model_instance.balance_amount
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH OUT"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount - amount
+            bank.save()
+            cash.balance_amount = cash.balance_amount + amount
+            cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH IN"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount + amount
+            bank.save()
+            cash.balance_amount = cash.balance_amount - amount
+            cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
     
     def post(self, request):
         dataset = Dataset()
@@ -195,7 +227,7 @@ class ImportExcelApiView(APIView):
                         IncomeCategoryModel.objects.create( category= i.get("category"),
                                                             user= request.user)
                 except Exception as e:
-                    pass
+                    print(e)
 
             if file == "uppy-expense-category":
                 data = request.FILES['uppy-expense-category']
@@ -206,7 +238,7 @@ class ImportExcelApiView(APIView):
                         ExpenseCategoryModel.objects.create(category= i.get("category"),
                                                             user= request.user)
                 except Exception as e:
-                    pass
+                    print(e)
 
 
             if file == "uppy-members-vendor-category":
@@ -218,7 +250,7 @@ class ImportExcelApiView(APIView):
                         MemberVenderDetailModel.objects.create( name= i.get("name"),
                                                                 user= request.user)
                 except Exception as e:
-                    pass
+                    print(e)
 
             if file == "uppy-members-category":
                 data = request.FILES['uppy-members-category']
@@ -237,7 +269,7 @@ class ImportExcelApiView(APIView):
                                                                     residence= i.get("residence"),
                                                                     user= request.user)
                 except Exception as e:
-                    pass
+                    print(e)
 
             if file == "uppy-ledger-category":
                 data = request.FILES['uppy-ledger-category']
@@ -250,7 +282,7 @@ class ImportExcelApiView(APIView):
                         income_or_expense = i.get("type")
                         if transaction_type and amount and income_or_expense:
                             opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank = self.add_balance_cash(self.request, transaction_type, amount, income_or_expense)
-                            IncomeExpenseLedgerModel.objects.create(   user = request.user,
+                            IncomeExpenseLedgerModel.objects.create(    user = request.user,
                                                                         date = i.get("date"),
                                                                         type = i.get("type"),
                                                                         amount = i.get("amount"),
@@ -268,7 +300,7 @@ class ImportExcelApiView(APIView):
                         else:
                             raise Exception
                 except Exception as e:
-                    pass
+                    print(e)
 
         return Response({"status": True}, status=status.HTTP_200_OK)
 

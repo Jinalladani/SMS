@@ -245,81 +245,79 @@ class IncomeExpenseLedgerCreateView(LoginRequiredMixin, CreateView):
     template_name = "accounting/ledger-add.html"
 
     def add_balance_cash(self, request, transaction_type, amount, income_or_expense):
-        if(income_or_expense == "income"):
-            if transaction_type == "cash":
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="cash").first()
+        if(income_or_expense == "Income"):
+            if transaction_type == "Cash":
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Cash").first()
                 balance_model_instance.balance_amount += amount
                 balance_model_instance.save()
                 closing_balance_cash = balance_model_instance.balance_amount
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-            elif transaction_type == "bank":
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="bank").first()
+            elif transaction_type == "Bank":
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Bank").first()
                 balance_model_instance.balance_amount += amount
                 balance_model_instance.save()
                 closing_balance_bank = balance_model_instance.balance_amount
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-        elif(income_or_expense == "expense"):
-            if transaction_type == "cash":
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="cash").first()
+        elif(income_or_expense == "Expense"):
+            if transaction_type == "Cash":
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Cash").first()
                 balance_model_instance.balance_amount -= amount
                 balance_model_instance.save()
                 closing_balance_cash = balance_model_instance.balance_amount
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                closing_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-            elif transaction_type == "bank":
-                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="bank").first()
+            elif transaction_type == "Bank":
+                opening_balance_bank = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+                balance_model_instance = BalanceModel.objects.filter(user= request.user, account="Bank").first()
                 balance_model_instance.balance_amount -= amount
                 balance_model_instance.save()
                 closing_balance_bank = balance_model_instance.balance_amount
-                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
+                opening_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+                closing_balance_cash = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
                 return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-        elif(income_or_expense == "cash-withdrawal"):
-            bank = BalanceModel.objects.filter(user= request.user, account= "bank").first()
-            cash = BalanceModel.objects.filter(user= request.user, account= "cash").first()
+        elif(income_or_expense == "CASH OUT"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
 
-            if(amount < bank.balance_amount):
-                opening_balance_cash = cash.balance_amount
-                opening_balance_bank = bank.balance_amount
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
 
-                bank.balance_amount = bank.balance_amount - amount
-                bank.save()
-                cash.balance_amount = cash.balance_amount + amount
-                cash.save()
+            bank.balance_amount = bank.balance_amount - amount
+            bank.save()
+            cash.balance_amount = cash.balance_amount + amount
+            cash.save()
 
-                closing_balance_cash = cash.balance_amount
-                closing_balance_bank = bank.balance_amount
-                return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
-        elif(income_or_expense == "cash-deposit"):
-            bank = BalanceModel.objects.filter(user= request.user, account= "bank").first()
-            cash = BalanceModel.objects.filter(user= request.user, account= "cash").first()
+        elif(income_or_expense == "CASH IN"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
 
-            if(amount < cash.balance_amount):
-                opening_balance_cash = cash.balance_amount
-                opening_balance_bank = bank.balance_amount
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
 
-                bank.balance_amount = bank.balance_amount + amount
-                bank.save()
-                cash.balance_amount = cash.balance_amount - amount
-                cash.save()
+            bank.balance_amount = bank.balance_amount + amount
+            bank.save()
+            cash.balance_amount = cash.balance_amount - amount
+            cash.save()
 
-                closing_balance_cash = cash.balance_amount
-                closing_balance_bank = bank.balance_amount
-                return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
 
     def form_valid(self, form):
         form.instance.user = self.request.user
