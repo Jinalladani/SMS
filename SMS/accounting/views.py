@@ -19,15 +19,18 @@ class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
         context = {}
         try:
-            context['cash_balance'] = BalanceModel.objects.filter(user= request.user, account="cash").first().balance_amount
-            context['bank_balance'] = BalanceModel.objects.filter(user= request.user, account="bank").first().balance_amount
-            context['total_income'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="income").aggregate(Sum("amount"))['amount__sum']
-            context['total_expense'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="expense").aggregate(Sum("amount"))['amount__sum']
-            context['income'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="income")
-            context['expense'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="expense")
-            context["top_20_income"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="income").order_by('-amount')[:20]
-            context["top_20_expense"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="expense").order_by('-amount')[:20]
-        except:
+            context['cash_balance'] = BalanceModel.objects.filter(user= request.user, account="Cash").first().balance_amount
+            context['bank_balance'] = BalanceModel.objects.filter(user= request.user, account="Bank").first().balance_amount
+            context['total_income'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Income").aggregate(Sum("amount"))['amount__sum']
+            context['total_expense'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Expense").aggregate(Sum("amount"))['amount__sum']
+            context['income'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Income")
+            context['expense'] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Expense")
+            context["top_20_income"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Income").order_by('-amount')[:20]
+            context["top_20_expense"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Expense").order_by('-amount')[:20]
+            context["top_income_members"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Income").values("from_or_to_account").annotate(amount= Sum("amount"))
+            context["top_expense_members"] = IncomeExpenseLedgerModel.objects.filter(user= request.user, type="Expense").values("from_or_to_account").annotate(amount= Sum("amount"))
+
+        except Exception as e:
             pass
         return render(request, 'accounting/dashboard.html', context)
 

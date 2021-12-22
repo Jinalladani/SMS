@@ -215,6 +215,18 @@ class ImportExcelApiView(APIView):
             closing_balance_bank = bank.balance_amount
             return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
     
+    def create_if_not_exist_category(self, category_type, ele):
+        if category_type == "Income":
+            obj, created = IncomeCategoryModel.objects.get_or_create(   user=  self.request.user,
+                                                                        category= ele)
+        elif category_type == "Expense":
+            obj, created = ExpenseCategoryModel.objects.get_or_create(  user=  self.request.user,
+                                                                        category= ele)
+
+    def create_if_not_exist_member_vendor(self, ele):
+        obj, created = MemberVenderDetailModel.objects.get_or_create(   user=  self.request.user,
+                                                                        name= ele)
+
     def post(self, request):
         dataset = Dataset()
         for file in request.FILES:  
@@ -239,7 +251,6 @@ class ImportExcelApiView(APIView):
                                                             user= request.user)
                 except Exception as e:
                     print(e)
-
 
             if file == "uppy-members-vendor-category":
                 data = request.FILES['uppy-members-vendor-category']
@@ -282,6 +293,8 @@ class ImportExcelApiView(APIView):
                         income_or_expense = i.get("type")
                         if transaction_type and amount and income_or_expense:
                             opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank = self.add_balance_cash(self.request, transaction_type, amount, income_or_expense)
+                            self.create_if_not_exist_category(income_or_expense, i.get("category_header"))
+                            self.create_if_not_exist_member_vendor(i.get("from_or_to_account"))
                             IncomeExpenseLedgerModel.objects.create(    user = request.user,
                                                                         date = i.get("date"),
                                                                         type = i.get("type"),

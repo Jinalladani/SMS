@@ -127,14 +127,18 @@
                 <table width="100%">
                     <thead>
                         <tr>
-                            <th width="50%">Category</th>
-                            <th width="50%">Amount</th>
+                            <th width="25%">Member(from or to account</th>
+                            <th width="25%">Category Header</th>
+                            <th width="25%">Transaction Type</th>
+                            <th width="25%">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for i in top_20_expense %}
                         <tr>
+                            <td>{{i.from_or_to_account}}</td>
                             <td>{{i.category_header}}</td>
+                            <td>{{i.transaction_type}}</td>
                             <td>{{i.amount}}</td>
                         </tr>
                         {% endfor %}
@@ -154,14 +158,66 @@
                 <table width="100%">
                     <thead>
                         <tr>
-                            <th width="50%">Category</th>
-                            <th width="50%">Amount</th>
+                            <th width="25%">Member(from or to account</th>
+                            <th width="25%">Category Header</th>
+                            <th width="25%">Transaction Type</th>
+                            <th width="25%">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for i in top_20_income %}
                         <tr>
+                            <td>{{i.from_or_to_account}}</td>
                             <td>{{i.category_header}}</td>
+                            <td>{{i.transaction_type}}</td>
+                            <td>{{i.amount}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Top Income Members Details</div>
+            <div class="card-body">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th width="50%">Member</th>
+                            <th width="50%">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in top_income_members %}
+                        <tr>
+                            <td>{{i.from_or_to_account}}</td>
+                            <td>{{i.amount}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Top Expense Members Details</div>
+            <div class="card-body">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th width="50%">Member</th>
+                            <th width="50%">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in top_expense_members %}
+                        <tr>
+                            <td>{{i.from_or_to_account}}</td>
                             <td>{{i.amount}}</td>
                         </tr>
                         {% endfor %}
