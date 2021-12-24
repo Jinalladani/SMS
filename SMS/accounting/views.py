@@ -6,7 +6,10 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.db import IntegrityError
+from django.db.models import Q
 from django.db.models import Sum
+import json
+from datetime import datetime, timedelta
 
 from accounting.models import ExpenseCategoryModel, IncomeCategoryModel, MemberVenderDetailModel, SocietyMemberDetailsModel, \
     BalanceModel, IncomeExpenseLedgerModel, LedgerFile
@@ -371,6 +374,34 @@ class IncomeExpenseLedgerExportView(LoginRequiredMixin, View):
         resource = IncomeExpenseLedgerResource()
         queryset = IncomeExpenseLedgerModel.objects.filter(user= request.user)
         dataset = resource.export(queryset)
+        response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="income-expense-ledger.xlsx"'
+        return response
+
+class FilteredIncomeExpenseLedgerExportView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        resource = IncomeExpenseLedgerResource()
+        qs = IncomeExpenseLedgerModel.objects.filter(user= request.user)
+        if self.request.GET:
+            data = dict(self.request.GET)
+            for i in data:
+                if i == "transaction_type":
+                    qs = qs.filter(Q(transaction_type__contains=data[i][0]))
+                if i == "category_header":
+                    qs = qs.filter(Q(category_header__contains=data[i][0]))
+                if i == "member":
+                    qs = qs.filter(Q(from_or_to_account__contains=data[i][0]))
+                if i == "type":
+                    qs = qs.filter(Q(type__contains=data[i][0]))
+                if i == "start":
+                    if data[i][0]:
+                        qs = qs.filter(Q(created__date__gte=datetime.strptime(data[i][0], "%Y-%m-%d")))
+                if i == "end":
+                    if data[i][0]:
+                        qs = qs.filter(Q(created__date__lte=datetime.strptime(data[i][0], "%Y-%m-%d")))
+
+        dataset = resource.export(qs)
         response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="income-expense-ledger.xlsx"'
         return response

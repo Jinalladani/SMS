@@ -31,6 +31,7 @@ urlpatterns = [
     path('add-income-expense-ledger/', views.IncomeExpenseLedgerCreateView.as_view(), name='add-income-expense-ledger'),
     path('update-income-expense-ledger/<int:pk>', views.IncomeExpenseLedgerUpdateView.as_view(), name='update-income-expense-ledger'),
     path('export-income-expense-ledger/', views.IncomeExpenseLedgerExportView.as_view(), name="export-income-expense-ledger"),
+    path('export-filtered-income-expense-ledger/', views.FilteredIncomeExpenseLedgerExportView.as_view(), name="export-filtered-income-expense-ledger"),
     path('upload-ledger-file/<int:pk>', views.UploadLedgerFileView.as_view(), name='upload-ledger-file'),
 
     path('upload-excel/', views.UploadExcel.as_view(), name='upload-excel'),

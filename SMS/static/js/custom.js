@@ -150,8 +150,19 @@ $(document).ready(() => {
                     console.log(error);
                 }
             }) 
+        
         });
 
+        $(document).on('click', '#export_filter', event => {
+            let url = '/accounting/export-filtered-income-expense-ledger/?'
+            let form = $('#export_filter').closest('form')
+            data = form.serializeArray();
+            $.each(data, (i, v) => {
+                url += `${v.name}=${v.value}&`
+            })
+            url = url.slice(0,-1)
+            window.location.href = url
+        })
     }
 });
 
