@@ -242,6 +242,13 @@ class BalanceUpdateView(LoginRequiredMixin, UpdateView):
 class IncomeExpenseLedger(LoginRequiredMixin, TemplateView):
     template_name = "accounting/ledger.html"
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['income_category'] = IncomeCategoryModel.objects.filter(user= self.request.user)
+        data['expense_category'] = ExpenseCategoryModel.objects.filter(user= self.request.user)
+        data['member'] = MemberVenderDetailModel.objects.filter(user= self.request.user)
+        return data
+
 class IncomeExpenseLedgerCreateView(LoginRequiredMixin, CreateView):
     model= IncomeExpenseLedgerModel
     fields = ['date', 'transaction_type', 'type', 'category_header', 'amount','from_or_to_account','transaction_details','voucherNo_or_invoiceNo','remark']

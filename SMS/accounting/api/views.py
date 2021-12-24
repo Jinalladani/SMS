@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from tablib import Dataset
 from rest_framework.authentication import SessionAuthentication
+import json
+from datetime import datetime, timedelta
 
 from accounting.models import BalanceModel, ExpenseCategoryModel, IncomeCategoryModel, MemberVenderDetailModel, SocietyMemberDetailsModel, IncomeExpenseLedgerModel
 
@@ -132,7 +134,25 @@ class IncomeExpenseLedgerListJSON(BaseDatatableView):
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(Q(type__contains=search))
+        if self.request.GET.get('columns[2][search][value]'):
+            data = json.loads(self.request.GET.get('columns[2][search][value]'))
+            for i in data:
+                if i['name'] == "transaction_type":
+                    qs = qs.filter(Q(transaction_type__contains=i['value']))
+                if i['name'] == "category_header":
+                    qs = qs.filter(Q(category_header__contains=i['value']))
+                if i['name'] == "member":
+                    qs = qs.filter(Q(from_or_to_account__contains=i['value']))
+                if i['name'] == "type":
+                    qs = qs.filter(Q(type__contains=i['value']))
+                if i['name'] == "start":
+                    if i['value']:
+                        qs = qs.filter(Q(created__date__gte=datetime.strptime(i['value'], "%Y-%m-%d")))
+                if i['name'] == "end":
+                    if i['value']:
+                        qs = qs.filter(Q(created__date__lte=datetime.strptime(i['value'], "%Y-%m-%d")))
         return qs
+        
 
     def get_initial_queryset(self):
         return self.model.objects.filter(user= self.request.user)

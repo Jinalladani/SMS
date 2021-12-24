@@ -735,8 +735,9 @@ $(document).ready(() => {
     }
 
     if (document.location.href.includes("ledger")) {
+        
         var income_expense_ledger = $('.table-income-expense-ledger').dataTable({
-            stateSave: true,
+            stateSave: false,
             select: {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
@@ -871,6 +872,11 @@ $(document).ready(() => {
 				}
 			});
 		});
+
+        $(document).on('submit', '#advance_search', (event) => {
+            event.preventDefault();
+            income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
+        })
     }
 
 })
