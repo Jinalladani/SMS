@@ -90,10 +90,10 @@ WSGI_APPLICATION = 'SMS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'MySocity_Management_System',
+        'NAME': 'test',
         'USER': 'jinal',
         'PASSWORD': 'jinal123',
-        'HOST': 'localhost',
+        'HOST': '64.227.186.69',
         'PORT': '3306',
     }
 }
