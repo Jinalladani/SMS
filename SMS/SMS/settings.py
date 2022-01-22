@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_extensions'
 ]
 
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 
@@ -132,8 +133,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -147,3 +148,11 @@ LOGIN_REDIRECT_URL = 'dashboard'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'societyfunds@gmail.com'
+EMAIL_HOST_PASSWORD = 'Bonrix@#123'
+EMAIL_USE_TLS = True
