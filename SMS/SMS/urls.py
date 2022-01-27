@@ -27,6 +27,7 @@ urlpatterns = [
     # including applications
     path('authentication/', include('authentication.urls')),
     path('accounting/', include('accounting.urls')),
+    path('member-panel/', include('member_panel.urls')),
 
     # including apis of application
     path('api/accounting/', include('accounting.api.urls')),

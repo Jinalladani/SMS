@@ -1,5 +1,6 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from phonenumber_field.modelfields import PhoneNumberField
 
 class ExpenseCategoryModel(TimeStampedModel):
     user = models.ForeignKey('authentication.User', related_name='ExpenseCategory', on_delete=models.CASCADE, blank=True, null=True)
@@ -53,11 +54,11 @@ class SocietyMemberDetailsModel(TimeStampedModel):
     user = models.ForeignKey('authentication.User', related_name='SocietyMemberDetails', on_delete=models.CASCADE, blank=True, null=True)
     flat_no = models.CharField(max_length=200)
     primary_name = models.CharField(max_length=200, null=True, blank=True)
-    primary_contact_no = models.CharField(max_length=10, null=True, blank=True)
+    primary_contact_no = PhoneNumberField(null=True, blank=True)
     secondary_name = models.CharField(max_length=200, null=True, blank=True)
-    secondary_contact_no = models.CharField(max_length=10, null=True, blank=True)
+    secondary_contact_no = PhoneNumberField(null=True, blank=True)
     accounting_name = models.CharField(max_length=200, null=True, blank=True)
-    whatsapp_contact_no = models.CharField(max_length=10, null=True, blank=True)
+    whatsapp_contact_no = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(null=True)
     residence = models.CharField(max_length=100, choices=RESIDENCE, null=True)
 
