@@ -1,12 +1,318 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    This is the Member Dashboard
-</body>
-</html>
+{% extends 'member-panel/base.html' %}
+{% block title %}
+<title>Member Dashboard</title>
+{% endblock title %}
+{% block subheader %}
+<!--begin::Subheader-->
+<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+    <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+        <!--begin::Info-->
+        <div class="d-flex align-items-center flex-wrap mr-2">
+            <!--begin::Page Title-->
+            <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5"><a href="{% url 'member-society-list' %}"><i class="flaticon2-left-arrow-1"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Member Dashboard</h5>
+            <!--end::Page Title-->
+        </div>
+        <!--end::Info-->
+    </div>
+</div>
+<!--end::Subheader-->
+{% endblock subheader %}
+{% block content %}
+<div class="row gutter-b">
+    <div class="col-md-3">
+        <!--begin::Stats Widget 25-->
+        <div class="card card-custom bg-light-success card-stretch gutter-b">
+            <!--begin::Body-->
+            <div class="card-body">
+                <span class="svg-icon svg-icon-success svg-icon-2x">
+                    <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Shopping\Wallet.svg--><svg
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                        height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <circle fill="#000000" opacity="0.3" cx="20.5" cy="12.5" r="1.5" />
+                            <rect fill="#000000" opacity="0.3"
+                                transform="translate(12.000000, 6.500000) rotate(-15.000000) translate(-12.000000, -6.500000) "
+                                x="3" y="3" width="18" height="7" rx="1" />
+                            <path
+                                d="M22,9.33681558 C21.5453723,9.12084552 21.0367986,9 20.5,9 C18.5670034,9 17,10.5670034 17,12.5 C17,14.4329966 18.5670034,16 20.5,16 C21.0367986,16 21.5453723,15.8791545 22,15.6631844 L22,18 C22,19.1045695 21.1045695,20 20,20 L4,20 C2.8954305,20 2,19.1045695 2,18 L2,6 C2,4.8954305 2.8954305,4 4,4 L20,4 C21.1045695,4 22,4.8954305 22,6 L22,9.33681558 Z"
+                                fill="#000000" />
+                        </g>
+                    </svg>
+                    <!--end::Svg Icon-->
+                </span>
+                <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">Bank
+                    Balance</span>
+                <span class="font-size-h2 font-weight-bold">₹ {{bank_balance}}</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 25-->
+    </div>
+    <div class="col-md-3">
+        <!--begin::Stats Widget 25-->
+        <div class="card card-custom bg-light-success card-stretch gutter-b">
+            <!--begin::Body-->
+            <div class="card-body">
+                <span class="svg-icon svg-icon-success svg-icon-2x">
+                    <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Shopping\Wallet.svg--><svg
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                        height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <circle fill="#000000" opacity="0.3" cx="20.5" cy="12.5" r="1.5" />
+                            <rect fill="#000000" opacity="0.3"
+                                transform="translate(12.000000, 6.500000) rotate(-15.000000) translate(-12.000000, -6.500000) "
+                                x="3" y="3" width="18" height="7" rx="1" />
+                            <path
+                                d="M22,9.33681558 C21.5453723,9.12084552 21.0367986,9 20.5,9 C18.5670034,9 17,10.5670034 17,12.5 C17,14.4329966 18.5670034,16 20.5,16 C21.0367986,16 21.5453723,15.8791545 22,15.6631844 L22,18 C22,19.1045695 21.1045695,20 20,20 L4,20 C2.8954305,20 2,19.1045695 2,18 L2,6 C2,4.8954305 2.8954305,4 4,4 L20,4 C21.1045695,4 22,4.8954305 22,6 L22,9.33681558 Z"
+                                fill="#000000" />
+                        </g>
+                    </svg>
+                    <!--end::Svg Icon-->
+                </span>
+                <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">Cash
+                    Balance</span>
+                <span class="font-size-h2 font-weight-bold">₹ {{cash_balance}}</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 25-->
+    </div>
+    <div class="col-md-3">
+        <!--begin::Stats Widget 25-->
+        <div class="card card-custom bg-light-success card-stretch gutter-b">
+            <!--begin::Body-->
+            <div class="card-body">
+                <span class="svg-icon svg-icon-success svg-icon-2x">
+                    <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Shopping\Wallet.svg--><svg
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                        height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <circle fill="#000000" opacity="0.3" cx="20.5" cy="12.5" r="1.5" />
+                            <rect fill="#000000" opacity="0.3"
+                                transform="translate(12.000000, 6.500000) rotate(-15.000000) translate(-12.000000, -6.500000) "
+                                x="3" y="3" width="18" height="7" rx="1" />
+                            <path
+                                d="M22,9.33681558 C21.5453723,9.12084552 21.0367986,9 20.5,9 C18.5670034,9 17,10.5670034 17,12.5 C17,14.4329966 18.5670034,16 20.5,16 C21.0367986,16 21.5453723,15.8791545 22,15.6631844 L22,18 C22,19.1045695 21.1045695,20 20,20 L4,20 C2.8954305,20 2,19.1045695 2,18 L2,6 C2,4.8954305 2.8954305,4 4,4 L20,4 C21.1045695,4 22,4.8954305 22,6 L22,9.33681558 Z"
+                                fill="#000000" />
+                        </g>
+                    </svg>
+                    <!--end::Svg Icon-->
+                </span>
+                <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">Total
+                    Income</span>
+                <span class="font-size-h2 font-weight-bold">₹ {{total_income}}</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 25-->
+    </div>
+    <div class="col-md-3">
+        <!--begin::Stats Widget 25-->
+        <div class="card card-custom bg-light-danger card-stretch gutter-b">
+            <!--begin::Body-->
+            <div class="card-body">
+                <span class="svg-icon svg-icon-danger svg-icon-2x">
+                    <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Shopping\Wallet.svg--><svg
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                        height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <circle fill="#000000" opacity="0.3" cx="20.5" cy="12.5" r="1.5" />
+                            <rect fill="#000000" opacity="0.3"
+                                transform="translate(12.000000, 6.500000) rotate(-15.000000) translate(-12.000000, -6.500000) "
+                                x="3" y="3" width="18" height="7" rx="1" />
+                            <path
+                                d="M22,9.33681558 C21.5453723,9.12084552 21.0367986,9 20.5,9 C18.5670034,9 17,10.5670034 17,12.5 C17,14.4329966 18.5670034,16 20.5,16 C21.0367986,16 21.5453723,15.8791545 22,15.6631844 L22,18 C22,19.1045695 21.1045695,20 20,20 L4,20 C2.8954305,20 2,19.1045695 2,18 L2,6 C2,4.8954305 2.8954305,4 4,4 L20,4 C21.1045695,4 22,4.8954305 22,6 L22,9.33681558 Z"
+                                fill="#000000" />
+                        </g>
+                    </svg>
+                    <!--end::Svg Icon-->
+                </span>
+                <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">Total
+                    Expense</span>
+                <span class="font-size-h2 font-weight-bold">₹ {{total_expense}}</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 25-->
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Income Details</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in income %}
+                            <tr>
+                                <td>{{i.category_header}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Expense Details</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in expense %}
+                            <tr>
+                                <td>{{i.category_header}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">
+                Top 20 Expense Details
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="25%">Member(from or to account)</th>
+                                <th width="25%">Category Header</th>
+                                <th width="25%">Transaction Type</th>
+                                <th width="25%">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in top_20_expense %}
+                            <tr>
+                                <td>{{i.from_or_to_account}}</td>
+                                <td>{{i.category_header}}</td>
+                                <td>{{i.transaction_type}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">
+                Top 20 Income Details
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="25%">Member(from or to account)</th>
+                                <th width="25%">Category Header</th>
+                                <th width="25%">Transaction Type</th>
+                                <th width="25%">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in top_20_income %}
+                            <tr>
+                                <td>{{i.from_or_to_account}}</td>
+                                <td>{{i.category_header}}</td>
+                                <td>{{i.transaction_type}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Top Income Members Details</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                            {% for i in top_income_members %}
+                            <tr>
+                                <td>{{i.from_or_to_account}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gutter-b">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-title h3 text-center p-3 m-0">Top Expense Members Details</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in top_expense_members %}
+                            <tr>
+                                <td>{{i.from_or_to_account}}</td>
+                                <td>{{i.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

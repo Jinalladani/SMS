@@ -1,4 +1,3 @@
-from decimal import Context
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.db.models import Q
 from import_export import resources

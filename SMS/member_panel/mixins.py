@@ -19,8 +19,8 @@ class RedirectIfLoggedIn:
         try:
             verified = request.session["is_verified"]
             if verified:
-                return redirect("member-dashboard")
+                return redirect("member-society-list")
             else:
                 return super().dispatch(request, *args, **kwargs)
         except KeyError as e:
-            return redirect("member-login")
+            return super().dispatch(request, *args, **kwargs)

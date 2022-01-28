@@ -19,11 +19,11 @@ function getCookie(name) {
 
 $(document).ready(() => {
     // $('.dateinput').datepicker({ format: "yyyy-mm-dd" });
-    let element_date = $('.dateinput') 
-    if(element_date.length){
+    let element_date = $('.dateinput')
+    if (element_date.length) {
         element_date.addClass("form-control")
         element_date.removeClass("dateinput")
-        element_date.get(0).type = "date" 
+        element_date.get(0).type = "date"
     }
 
     $(document).on('click', '.delete-record', function (event) {
@@ -64,7 +64,7 @@ $(document).ready(() => {
                 });
             }
         });
-    });    
+    });
 
     if (window.location.href.includes('upload-excel')) {
 
@@ -108,26 +108,26 @@ $(document).ready(() => {
         })
     }
 
-    if(window.location.href.includes("income-expense-ledger")){
+    if (window.location.href.includes("income-expense-ledger") && !window.location.href.includes("member-income-expense-ledger")) {
         $.ajax({
             url: "/api/accounting/get-category-header/",
             method: "GET",
-            data: {type: "from-or-to-accounting"},
+            data: { type: "from-or-to-accounting" },
             success: (response) => {
                 let from_or_to_account_select_html = "<select name='from_or_to_account' class='select form-control'></select>"
-                $( "input[name=from_or_to_account]" ).replaceWith(from_or_to_account_select_html)
+                $("input[name=from_or_to_account]").replaceWith(from_or_to_account_select_html)
                 $("select[name=from_or_to_account]").html("")
                 $("select[name=from_or_to_account]").append("<option value=''>----------</option>")
                 $("select[name=from_or_to_account]").append(
                     response.map((value, index) => (
                         `<option value='${value.name}'>${value.name}</option>`
-                    ))   
+                    ))
                 )
             },
             error: (error) => {
                 console.log(error);
             }
-        }) 
+        })
 
 
         $(document).on("change", "select[name=type]", (event) => {
@@ -136,21 +136,21 @@ $(document).ready(() => {
             $.ajax({
                 url: "/api/accounting/get-category-header/",
                 method: "GET",
-                data: {type},
+                data: { type },
                 success: (response) => {
-                    $( "input[name=category_header]" ).replaceWith(category_header_select_html)
+                    $("input[name=category_header]").replaceWith(category_header_select_html)
                     $("select[name=category_header]").html("")
                     $("select[name=category_header]").append(
                         response.map((value, index) => (
                             `<option value='${value.category}'>${value.category}</option>`
-                        ))   
+                        ))
                     )
                 },
                 error: (error) => {
                     console.log(error);
                 }
-            }) 
-        
+            })
+
         });
 
         $(document).on('click', '#export_filter', event => {
@@ -160,7 +160,7 @@ $(document).ready(() => {
             $.each(data, (i, v) => {
                 url += `${v.name}=${v.value}&`
             })
-            url = url.slice(0,-1)
+            url = url.slice(0, -1)
             window.location.href = url
         })
     }
@@ -175,18 +175,18 @@ $(document).ready(() => {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+            dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
+            buttons: [
                 {
                     text: "Export to Excel",
                     action: () => {
                         window.location.href = '/accounting/export-income-category/';
                     }
                 },
-				{
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -198,7 +198,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(income_category_table.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(income_category_table.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -207,7 +207,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "IncomeCategoryModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -229,10 +229,10 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
@@ -260,28 +260,28 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-income-category/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/incomecategory/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-income-category/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/incomecategory/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		income_category_table.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        income_category_table.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					income_category_table.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					income_category_table.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    income_category_table.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    income_category_table.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
     }
 
     if (document.location.href.includes("expense-category")) {
@@ -292,18 +292,18 @@ $(document).ready(() => {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+            dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
+            buttons: [
                 {
                     text: "Export to Excel",
                     action: () => {
                         window.location.href = '/accounting/export-expense-category/';
                     }
                 },
-				{
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -315,7 +315,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(expense_category_table.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(expense_category_table.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -324,7 +324,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "ExpenseCategoryModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -346,17 +346,17 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
                         <input type="checkbox" value="" class="group-checkable"/>
                         <span></span>
                     </label>`;
-            },  
+            },
             "processing": true,
             "serverSide": true,
             "ajax": BASE_URL + "/api/accounting/list-expense-category/",
@@ -377,28 +377,28 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-expense-category/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/expensecategory/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-expense-category/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/expensecategory/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		expense_category_table.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        expense_category_table.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					expense_category_table.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					expense_category_table.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    expense_category_table.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    expense_category_table.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
 
     }
 
@@ -409,18 +409,18 @@ $(document).ready(() => {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+            dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
+            buttons: [
                 {
                     text: "Export to Excel",
                     action: () => {
                         window.location.href = '/accounting/export-members-vendor/';
                     }
                 },
-				{
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -432,7 +432,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(members_vendor_table.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(members_vendor_table.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -441,7 +441,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "MemberVenderDetailModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -463,10 +463,10 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
@@ -494,28 +494,28 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-members-vendor/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/membersvender/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-members-vendor/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/membersvender/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		members_vendor_table.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        members_vendor_table.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					members_vendor_table.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					members_vendor_table.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    members_vendor_table.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    members_vendor_table.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
     }
 
     if (document.location.href.includes("member-details")) {
@@ -526,18 +526,18 @@ $(document).ready(() => {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+            dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
+            buttons: [
                 {
                     text: "Export to Excel",
                     action: () => {
                         window.location.href = '/accounting/export-member-details/';
                     }
                 },
-				{
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -549,7 +549,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(members_details_table.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(members_details_table.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -558,7 +558,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "SocietyMemberDetailsModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -580,10 +580,10 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
@@ -610,28 +610,28 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-member-details/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/memberdetails/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-member-details/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/memberdetails/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		members_details_table.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        members_details_table.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					members_details_table.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					members_details_table.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    members_details_table.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    members_details_table.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
     }
 
     if (document.location.href.includes("balance")) {
@@ -641,12 +641,12 @@ $(document).ready(() => {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+            dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
-				{
+            buttons: [
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -658,7 +658,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(balance_table.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(balance_table.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -667,7 +667,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "BalanceModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -689,10 +689,10 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
@@ -720,44 +720,44 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-balance/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/balance/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-balance/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/balance/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		balance_table.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        balance_table.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					balance_table.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					balance_table.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    balance_table.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    balance_table.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
 
     }
 
-    if (document.location.href.includes("ledger")) {
-        
+    if (document.location.href.includes("income-expense-ledger") && !window.location.href.includes("member-income-expense-ledger")) {
+
         var income_expense_ledger = $('.table-income-expense-ledger').dataTable({
             stateSave: false,
             select: {
                 style: 'multi',
                 selector: 'td:first-child .checkable',
             },
-			dom: `<'row'<'col-sm-4 text-left'f><'col-sm-8 text-right'B>>
+            dom: `<'row'<'col-sm-4 text-left'f><'col-sm-8 text-right'B>>
 			<'row'<'col-sm-12'tr>>
 			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
 
-			buttons: [
+            buttons: [
                 {
                     text: "Cash Withdrawal",
                     action: () => {
@@ -776,7 +776,7 @@ $(document).ready(() => {
                         window.location.href = '/accounting/export-income-expense-ledger/';
                     }
                 },
-				{
+                {
                     text: 'Delete selected data',
                     action: function () {
                         Swal.fire({
@@ -788,7 +788,7 @@ $(document).ready(() => {
                         }).then(function (result) {
                             if (result.value) {
                                 const csrftoken = getCookie('csrftoken');
-                                let pk_array = $.map(income_expense_ledger.api().rows( { selected: true } ).data(), function (item) {
+                                let pk_array = $.map(income_expense_ledger.api().rows({ selected: true }).data(), function (item) {
                                     return item[0];
                                 });
                                 $.ajax({
@@ -797,7 +797,7 @@ $(document).ready(() => {
                                     data: {
                                         model_name: "IncomeExpenseLedgerModel",
                                         pk_array
-                                    },        
+                                    },
                                     headers: {
                                         'X-CSRFTOKEN': csrftoken
                                     },
@@ -819,10 +819,10 @@ $(document).ready(() => {
                                     }
                                 });
                             }
-                        });                
+                        });
                     }
                 }
-			],
+            ],
             headerCallback: function (thead, data, start, end, display) {
                 thead.getElementsByTagName('th')[0].innerHTML = `
                     <label class="checkbox checkbox-single checkbox-solid checkbox-primary mb-0">
@@ -849,10 +849,10 @@ $(document).ready(() => {
                     targets: 9,
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        if(!row[9]){
+                        if (!row[9]) {
                             return '<a href="/accounting/upload-ledger-file/' + row[0] + '" class="btn btn-primary">File</a>';
-                        }else{
-                            return '<a href="'+row[9]+'">open file</a>'
+                        } else {
+                            return '<a href="' + row[9] + '">open file</a>'
                         }
                     },
                 },
@@ -861,33 +861,75 @@ $(document).ready(() => {
                     title: 'Actions',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        return '<a href="/accounting/update-income-expense-ledger/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/incomeexpenseledger/delete/'+row[0]+'/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/accounting/update-income-expense-ledger/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/accounting/incomeexpenseledger/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
                     },
                 }
             ],
             "order": [[0, "desc"]],
         });
 
-		income_expense_ledger.on('change', '.group-checkable', function() {
-			var set = $(this).closest('table').find('td:first-child .checkable');
-			var checked = $(this).is(':checked');
+        income_expense_ledger.on('change', '.group-checkable', function () {
+            var set = $(this).closest('table').find('td:first-child .checkable');
+            var checked = $(this).is(':checked');
 
-			$(set).each(function() {
-				if (checked) {
-					$(this).prop('checked', true);
-					income_expense_ledger.api().rows($(this).closest('tr')).select();
-				}
-				else {
-					$(this).prop('checked', false);
-					income_expense_ledger.api().rows($(this).closest('tr')).deselect();
-				}
-			});
-		});
+            $(set).each(function () {
+                if (checked) {
+                    $(this).prop('checked', true);
+                    income_expense_ledger.api().rows($(this).closest('tr')).select();
+                }
+                else {
+                    $(this).prop('checked', false);
+                    income_expense_ledger.api().rows($(this).closest('tr')).deselect();
+                }
+            });
+        });
 
         $(document).on('submit', '#advance_search', (event) => {
             event.preventDefault();
             income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
         })
     }
+})
+
+$(document).ready(() => {
+
+    if (document.location.href.includes("member-income-expense-ledger")) {
+        let PK = $("input[name=pk]").val()
+        var member_income_expense_ledger = $('.table-member-income-expense-ledger').dataTable({
+            stateSave: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": BASE_URL + "/api/member-panel/list-member-income-expense-ledger/",
+                "data": function ( d ) {
+                    d.society_id = PK;
+                }
+            },
+            "columnDefs": [
+                {
+                    targets: 0,
+                    visible: false,
+                    orderable: false
+                },
+                {
+                    targets: 9,
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        if (!row[9]) {
+                            return '------';
+                        } else {
+                            return '<a href="' + row[9] + '">open file</a>'
+                        }
+                    },
+                }
+            ],
+            "order": [[0, "desc"]],
+        });
+        $(document).on('submit', '#advance_search', (event) => {
+            event.preventDefault();
+            member_income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
+        })
+    }
+
 
 })

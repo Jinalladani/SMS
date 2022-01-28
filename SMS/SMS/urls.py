@@ -31,6 +31,7 @@ urlpatterns = [
 
     # including apis of application
     path('api/accounting/', include('accounting.api.urls')),
+    path('api/member-panel/', include('member_panel.api.urls')),
 ]
 
 urlpatterns += static(  settings.MEDIA_URL, 

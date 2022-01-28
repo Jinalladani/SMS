@@ -10,20 +10,55 @@ import requests
 from random import randint
 import phonenumbers
 from django.contrib import messages
+from django.db.models import Sum
 
 from accounting.models import SocietyMemberDetailsModel
+from authentication.models import User
 from member_panel.forms import MemberLoginForm
 from member_panel.models import OtpModel
+from accounting.models import SocietyMemberDetailsModel, \
+    BalanceModel, IncomeExpenseLedgerModel, IncomeCategoryModel, ExpenseCategoryModel, MemberVenderDetailModel
 
 from member_panel.mixins import MemberLoginRequired, RedirectIfLoggedIn
 
-# Create your views here.
-
-class MemberDashboard(MemberLoginRequired, TemplateView):
+class SocietyListView(MemberLoginRequired, TemplateView):
 
     def get(self, request):
         context = {}
+        mobile_number = request.session["mobile_number"]
+        mobile_number = phonenumbers.parse(mobile_number, None)
+        Member = SocietyMemberDetailsModel.objects.filter(Q(primary_contact_no= mobile_number) | Q(secondary_contact_no= mobile_number) | Q(whatsapp_contact_no= mobile_number))
+        context['members'] = Member
+        return render(request, "member-panel/member-society-list.html", context)
+
+class MemberDashboard(MemberLoginRequired, TemplateView):
+
+    def get(self, request, pk):
+        context = {}
+        society = User.objects.get(pk= pk)
+        context['society'] = society
+        context['cash_balance'] = BalanceModel.objects.filter(user= society, account="Cash").first().balance_amount
+        context['bank_balance'] = BalanceModel.objects.filter(user= society, account="Bank").first().balance_amount
+        context['total_income'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").aggregate(Sum("amount"))['amount__sum']
+        context['total_expense'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").aggregate(Sum("amount"))['amount__sum']
+        context['income'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income")
+        context['expense'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense")
+        context["top_20_income"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").order_by('-amount')[:20]
+        context["top_20_expense"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").order_by('-amount')[:20]
+        context["top_income_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").values("from_or_to_account").annotate(amount= Sum("amount"))
+        context["top_expense_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").values("from_or_to_account").annotate(amount= Sum("amount"))
         return render(request, "member-panel/member-dashboard.html", context)
+
+class MemberIncomeExpenseLedger(MemberLoginRequired, TemplateView):
+
+    def get(self, request, pk):
+        context = {}
+        society = User.objects.get(pk= pk)
+        context['society'] = society
+        context['income_category'] = IncomeCategoryModel.objects.filter(user= society)
+        context['expense_category'] = ExpenseCategoryModel.objects.filter(user= society)
+        context['member'] = MemberVenderDetailModel.objects.filter(user= society)
+        return render(request, "member-panel/member-income-expense-ledger.html", context)
 
 class MemberLoginView(RedirectIfLoggedIn, View):
 
@@ -72,8 +107,15 @@ class MemberOtpVerification(RedirectIfLoggedIn, View):
 
         if int(stored_otp) == int(otp):
             request.session["is_verified"] = True
-            return redirect('member-dashboard')
+            return redirect('member-society-list')
         else:
             request.session["is_verified"] = False
             messages.add_message(request, messages.INFO, "OTP is not valid.")
             return render(request, "member-panel/member-otp-verification.html", context)
+
+class MemberLogoutView(MemberLoginRequired, View):
+
+    def get(self, request):
+        del request.session["mobile_number"]
+        del request.session["is_verified"]
+        return redirect("member-login")
