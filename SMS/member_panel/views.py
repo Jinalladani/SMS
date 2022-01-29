@@ -1,7 +1,4 @@
-from email import contentmanager
-import imp
 from django.shortcuts import redirect, render
-from django.template import context
 from django.views import View
 from django.views.generic import TemplateView
 from django.db.models import Q
