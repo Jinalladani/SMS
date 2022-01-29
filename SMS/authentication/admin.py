@@ -6,13 +6,13 @@ from authentication.models import User
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('email', 'is_admin',)
-    list_filter = ('is_admin',)
+    list_display = ('email', 'is_superuser', 'is_admin')
+    list_filter = ('is_superuser', 'is_admin')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('username', 'first_name',
          'last_name', 'phone', 'society_name', 'society_address','city','pincode','state','country')}),
-        ('Permissions', {'fields': ('is_admin',
+        ('Permissions', {'fields': ('is_superuser', 'is_admin',
          'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('date_joined', 'last_login',)}),
     )
