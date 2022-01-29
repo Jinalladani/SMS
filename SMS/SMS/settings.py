@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'crispy_forms',
     'import_export',
+    'phonenumber_field',
     
     # Custom application
     'authentication',
     'accounting',
-    'django_extensions'
+    'django_extensions',
+    'member_panel'
 ]
 
 
@@ -156,3 +158,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'societyfunds@gmail.com'
 EMAIL_HOST_PASSWORD = 'Bonrix@#123'
 EMAIL_USE_TLS = True
+
+SMSURL = "http://quicksms.highspeedsms.com/sendsms/sendsms.php?username=BREbonrix&password=sales55&type=TEXT&sender=BONRIX&mobile={phone_no}&message=Your%20OTP%20for%20login%20verification%20is%20:=%20{otp}"

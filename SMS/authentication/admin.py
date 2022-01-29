@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('username', 'first_name',
          'last_name', 'phone', 'society_name', 'society_address','city','pincode','state','country')}),
-        ('Permissions', {'fields': ('is_superuser', 'is_admin',
+        ('Permissions', {'fields': ('is_superuser', 'is_admin', 'is_active',
          'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('date_joined', 'last_login',)}),
     )
