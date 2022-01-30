@@ -33,18 +33,44 @@ class MemberDashboard(MemberLoginRequired, TemplateView):
     def get(self, request, pk):
         context = {}
         society = User.objects.get(pk= pk)
+        request.session["society-id"] = society.pk
         context['society'] = society
         context['cash_balance'] = BalanceModel.objects.filter(user= society, account="Cash").first().balance_amount
         context['bank_balance'] = BalanceModel.objects.filter(user= society, account="Bank").first().balance_amount
         context['total_income'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").aggregate(Sum("amount"))['amount__sum']
         context['total_expense'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").aggregate(Sum("amount"))['amount__sum']
-        context['income'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income")
-        context['expense'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense")
-        context["top_20_income"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").order_by('-amount')[:20]
-        context["top_20_expense"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").order_by('-amount')[:20]
-        context["top_income_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").values("from_or_to_account").annotate(amount= Sum("amount"))
-        context["top_expense_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").values("from_or_to_account").annotate(amount= Sum("amount"))
         return render(request, "member-panel/member-dashboard.html", context)
+
+class MemberDashboardDetailView(MemberLoginRequired, TemplateView):
+
+    def get(self, request, detail_type):
+        context = {}
+        pk = request.session["society-id"]
+        society = User.objects.get(pk= pk)
+        context['society'] = society
+        if detail_type == "income_details":
+            context['income'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income")
+            return render(request, "member-panel/income-details.html", context)
+
+        if detail_type == "expense_details":
+            context['expense'] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense")
+            return render(request, "member-panel/expense-details.html", context)
+
+        if detail_type == "top_20_expense_details":
+            context["top_20_expense"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").order_by('-amount')[:20]
+            return render(request, "member-panel/top-20-expense-details.html", context)
+
+        if detail_type == "top_20_income_details":
+            context["top_20_income"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").order_by('-amount')[:20]
+            return render(request, "member-panel/top-20-income-details.html", context)
+
+        if detail_type == "top_income_member_details":
+            context["top_income_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Income").values("from_or_to_account").annotate(amount= Sum("amount"))
+            return render(request, "member-panel/top-income-member-details.html", context)
+
+        if detail_type == "top_expense_member_details":
+            context["top_expense_members"] = IncomeExpenseLedgerModel.objects.filter(user= society, type="Expense").values("from_or_to_account").annotate(amount= Sum("amount"))
+            return render(request, "member-panel/top-expense-member-details.html", context)
 
 class MemberIncomeExpenseLedger(MemberLoginRequired, TemplateView):
 

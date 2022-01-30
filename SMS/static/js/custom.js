@@ -905,6 +905,14 @@ $(document).ready(() => {
                     d.society_id = PK;
                 }
             },
+            createdRow: (row, data, dataIndex) => {
+                $(row).html(`
+                    ${data[10]}
+                `)
+            },
+            drawCallback: () => {
+                $(".table-member-income-expense-ledger thead").remove();
+            },
             "columnDefs": [
                 {
                     targets: 0,
