@@ -42,8 +42,10 @@
                     </svg>
                     <!--end::Svg Icon-->
                 </span>
-                <span class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-0 mt-6 d-block">Bank
-                    Balance</span>
+                <a href="#" id="bank_balance">
+                    <span class="card-title font-weight-bolder text-primary-75 font-size-h5 mb-0 mt-6 d-block">Bank
+                        Balance</span>
+                </a>
                 <span class="font-size-h5 font-weight-bold">₹ {{bank_balance}}</span>
             </div>
             <!--end::Body-->
@@ -72,8 +74,10 @@
                     </svg>
                     <!--end::Svg Icon-->
                 </span>
-                <span class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-0 mt-6 d-block">Cash
-                    Balance</span>
+                <a href="#" id="cash_balance">
+                    <span class="card-title font-weight-bolder text-primary-75 font-size-h5 mb-0 mt-6 d-block">Cash
+                        Balance</span>
+                </a>
                 <span class="font-size-h5 font-weight-bold">₹ {{cash_balance}}</span>
             </div>
             <!--end::Body-->
@@ -104,8 +108,10 @@
                     </svg>
                     <!--end::Svg Icon-->
                 </span>
-                <span class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-0 mt-6 d-block">Total
-                    Income</span>
+                <a href="#" id="total_income">
+                    <span class="card-title font-weight-bolder text-primary-75 font-size-h5 mb-0 mt-6 d-block">Total
+                        Income</span>
+                </a>
                 <span class="font-size-h5 font-weight-bold">₹ {{total_income}}</span>
             </div>
             <!--end::Body-->
@@ -134,8 +140,10 @@
                     </svg>
                     <!--end::Svg Icon-->
                 </span>
-                <span class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-0 mt-6 d-block">Total
-                    Expense</span>
+                <a href="#" id="total_expense">
+                    <span class="card-title font-weight-bolder text-danger font-size-h5 mb-0 mt-6 d-block">Total
+                        Expense</span>
+                </a>
                 <span class="font-size-h5 font-weight-bold">₹ {{total_expense}}</span>
             </div>
             <!--end::Body-->
@@ -339,6 +347,37 @@
                     <div class="d-flex flex-column font-weight-bold">
                         <a href="{% url 'member-dashboard-detail' 'top_expense_member_details' %}" class="text-dark text-hover-primary mb-1 font-size-lg">Top Expense Member
                             Details</a>
+                        <span class="text-muted">Click to view</span>
+                    </div>
+                    <!--end::Text-->
+                </div>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <div class="d-flex align-items-center mb-10">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">
+                            <span class="svg-icon svg-icon-primary svg-icon-2x">
+                                <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Media\Equalizer.svg--><svg
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24" />
+                                        <rect fill="#000000" opacity="0.3" x="13" y="4" width="3" height="16"
+                                            rx="1.5" />
+                                        <rect fill="#000000" x="8" y="9" width="3" height="11" rx="1.5" />
+                                        <rect fill="#000000" x="18" y="11" width="3" height="9" rx="1.5" />
+                                        <rect fill="#000000" x="3" y="13" width="3" height="7" rx="1.5" />
+                                    </g>
+                                </svg>
+                                <!--end::Svg Icon-->
+                            </span>
+                        </span>
+                    </div>
+                    <!--end::Symbol-->
+                    <!--begin::Text-->
+                    <div class="d-flex flex-column font-weight-bold">
+                        <a href="{% url 'member-income-expense-ledger' society.pk %}" id="member-income-expense-ledger" class="text-dark text-hover-primary mb-1 font-size-lg">Income Expense Ledger</a>
                         <span class="text-muted">Click to view</span>
                     </div>
                     <!--end::Text-->

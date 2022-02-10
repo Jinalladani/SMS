@@ -164,6 +164,28 @@ $(document).ready(() => {
             window.location.href = url
         })
     }
+
+    if (window.location.href.includes("member-dashboard")){
+
+        href = $("#member-income-expense-ledger").attr("href")
+
+        $("#bank_balance").click((e) => {
+            window.localStorage.setItem("ledger-filter", "bank_balance");
+            window.location.href = BASE_URL + href;
+        })
+        $("#cash_balance").click((e) => {
+            window.localStorage.setItem("ledger-filter", "cash_balance");
+            window.location.href = BASE_URL + href;
+        })
+        $("#total_income").click((e) => {
+            window.localStorage.setItem("ledger-filter", "total_income");
+            window.location.href = BASE_URL + href;
+        })
+        $("#total_expense").click((e) => {
+            window.localStorage.setItem("ledger-filter", "total_expense");
+            window.location.href = BASE_URL + href;
+        })
+    }
 });
 
 $(document).ready(() => {
@@ -907,7 +929,68 @@ $(document).ready(() => {
             },
             createdRow: (row, data, dataIndex) => {
                 $(row).html(`
-                    ${data[10]}
+                    <div class="col-xs-12">
+                        <!--begin: Stats Widget 19-->
+                        <div class="card card-custom bg-light-success card-stretch gutter-b">
+                            <div class="cart-title px-5 py-2">
+                                <div class="row my-2">
+                                    <div class="col-8 card-title font-weight-bolder text-success text-hover-state-dark font-size-h6 mb-4 d-block">${data[2]}
+                                    <div class="text-black-50 mt-1">${data[1]}</div>
+                                    </div>
+                                    <div class="col-3 text-dark-75 font-size-sm font-weight-bolder mr-2">₹ ${data[3]}</div>
+                                </div>
+                            </div>
+                            <hr>
+                            <!--begin::Body-->
+                            <div class="card-body p-2 px-5">
+                                <div class="row pb-5">
+                                    <div class="col-8">
+                                        <div class="title font-weight-boldest font-size-sm">
+                                            Invoice No.
+                                        </div>
+                                        <div>
+                                            ${data[8]}
+                                        </div>
+                                    </div>
+                                    <div class="col-4 font-weight-boldest">
+                                        ${data[6]}
+                                    </div>
+                                </div>
+                                <div class="row pb-5">
+                                    <div class="col-8">
+                                        <div class="title font-weight-boldest font-size-sm">
+                                            Remarks
+                                        </div>
+                                        <div>
+                                            ${data[10]}
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="title font-weight-boldest font-size-sm">Opening Balance</div>
+                                        <div>₹ ${data[6]=="Bank"?data[13]:data[11]}</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="title font-weight-boldest font-size-sm">
+                                            From or to Account
+                                        </div>
+                                        <div>
+                                            Name of account holder
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="title font-weight-boldest font-size-sm">Closing Balance</div>
+                                        <div>₹ ${data[6]=="Bank"?data[12]:data[14]}</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                ${row[9]?'<a href="' + row[9] + '">open file</a>':'No File'}
+                            </div>
+                            <!--end:: Body-->
+                        </div>
+                        <!--end: Stats:Widget 19-->
+                    </div>
                 `)
             },
             drawCallback: () => {
@@ -937,7 +1020,36 @@ $(document).ready(() => {
             event.preventDefault();
             member_income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
         })
+
+        let ledger_filter = window.localStorage.getItem("ledger-filter");
+
+        switch (ledger_filter) {
+            case "bank_balance":
+                $("select[name=transaction_type]").val("Bank")
+                $(".btn.btn-primary.btn-primary--icon").click();
+                window.localStorage.removeItem("ledger-filter");
+                break;
+                
+            case "cash_balance":
+                $("select[name=transaction_type]").val("Cash")
+                $(".btn.btn-primary.btn-primary--icon").click();
+                window.localStorage.removeItem("ledger-filter");
+                break;
+
+            case "total_income":
+                $("input[name=type]").val("Income")
+                $(".btn.btn-primary.btn-primary--icon").click();
+                window.localStorage.removeItem("ledger-filter");
+                break;
+                
+            case "total_expense":
+                $("input[name=type]").val("Expense")
+                $(".btn.btn-primary.btn-primary--icon").click();
+                window.localStorage.removeItem("ledger-filter");
+                break;
+
+            default:
+                break;
+        }
     }
-
-
 })
