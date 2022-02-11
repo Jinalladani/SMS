@@ -937,7 +937,7 @@ $(document).ready(() => {
                                     <div class="col-8 card-title font-weight-bolder text-success text-hover-state-dark font-size-h6 mb-4 d-block">${data[2]}
                                     <div class="text-black-50 mt-1">${data[1]}</div>
                                     </div>
-                                    <div class="col-3 text-dark-75 font-size-sm font-weight-bolder mr-2">₹ ${data[3]}</div>
+                                    <div class="col-3 text-dark-75  font-weight-bolder mr-2">₹ ${data[3]}</div>
                                 </div>
                             </div>
                             <hr>
@@ -967,7 +967,7 @@ $(document).ready(() => {
                                     </div>
                                     <div class="col-4">
                                         <div class="title font-weight-boldest font-size-sm">Opening Balance</div>
-                                        <div>₹ ${data[6]=="Bank"?data[13]:data[11]}</div>
+                                        <div>₹ ${data[6]==="Bank"?data[13]:data[11]}</div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -976,12 +976,12 @@ $(document).ready(() => {
                                             From or to Account
                                         </div>
                                         <div>
-                                            Name of account holder
+                                            ${data[5]}
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="title font-weight-boldest font-size-sm">Closing Balance</div>
-                                        <div>₹ ${data[6]=="Bank"?data[12]:data[14]}</div>
+                                        <div>₹ ${data[6]==="Bank"?data[14]:data[12]}</div>
                                     </div>
                                 </div>
                                 <hr>
