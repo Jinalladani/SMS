@@ -19,5 +19,42 @@
 <!--end::Subheader-->
 {% endblock subheader %}
 {% block content %}
-This is admin panel dashboard.
+<div class="row gutter-b">
+    <div class="col-md-3">
+        <div class="card shadow ">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    List : {{all_list}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow ">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    Active : {{active}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow ">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    Deactive : {{deactive}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

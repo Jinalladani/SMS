@@ -1053,3 +1053,32 @@ $(document).ready(() => {
         }
     }
 })
+
+
+$(document).ready(() => {
+
+    if (document.location.href.includes("admin-settings")) {
+        var admin_settings = $('.table-admin-settings').dataTable({
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": BASE_URL + "/api/admin-panel/list-admin-settings/",
+            "columnDefs": [
+                {
+                    targets: 0,
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    targets: -1,
+                    title: 'Actions',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return '<a href="/admin-panel/update-admin-settings/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/admin-panel/admin-settings/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                    },
+                }
+            ],
+            "order": [[0, "desc"]],
+        })
+    }
+})

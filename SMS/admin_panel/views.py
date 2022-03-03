@@ -1,3 +1,4 @@
+import imp
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import views as auth_views
@@ -31,6 +32,11 @@ from django.contrib.sites.shortcuts import get_current_site
 from admin_panel.forms import AdminAuthenticationForm
 from django.contrib.auth.mixins import UserPassesTestMixin
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
+from django.views.generic import CreateView, UpdateView
+from admin_panel.models import SettingModel
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class SuccessURLAllowedHostsMixin:
@@ -110,4 +116,36 @@ class AdminLoginView(SuccessURLAllowedHostsMixin, FormView):
 class AdminPanelDashboardView(View):
     def get(self, request):
         context = {}
+        admins = User.objects.filter(is_superuser=False)
+        all_list = admins.count()
+        active = admins.filter(is_active=True).count()
+        deactive = admins.filter(is_active=False).count()
+        context['all_list'] = all_list
+        context['active'] = active
+        context['deactive'] = deactive
         return render(request, "admin-panel/admin-dashboard.html", context)
+
+
+class AdminSettingView(View):
+
+    def get(self, request):
+        context = {}
+        return render(request, "admin-panel/admin-settings.html", context)
+
+class AddAdminSettingView(CreateView):
+    model = SettingModel
+    fields = ['key', 'value']
+    template_name = 'admin-panel/settings-add.html'
+    success_url = '/admin-panel/admin-settings/'
+
+class UpdateAdminSettingView(UpdateView):
+    model = SettingModel
+    fields = ['key', 'value']
+    template_name = 'admin-panel/settings-update.html'
+    success_url = '/admin-panel/admin-settings/'
+
+class AdminSocietysView(View):
+
+    def get(self, request):
+        context = {}
+        return render(request, "admin-panel/admin-societys.html", context)
