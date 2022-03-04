@@ -911,6 +911,41 @@ $(document).ready(() => {
             income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
         })
     }
+
+    if (document.location.href.includes("admin-societys")) {
+        $(document).on("change", "input[name=society_is_active]", (e) => {
+            let is_active = $(e.target).is(":checked");
+            let society_id = $(e.target).val();
+            const csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                url: "/api/admin-panel/toggle-society-status/",
+                method: "POST",
+                data: {
+                    society_id,
+                    is_active
+                },
+                headers: {
+                    'X-CSRFTOKEN': csrftoken
+                },
+                success: (response) => {
+                    Swal.fire(
+                        "Updated!",
+                        response.message,
+                        "success"
+                    );
+                },
+                error: (error) => {
+                    Swal.fire(
+                        "Not Updated!",
+                        "Something went wrong",
+                        "error"
+                    )
+                    window.location.reload()
+                }
+            })
+        })
+    }
 })
 
 $(document).ready(() => {
@@ -1081,4 +1116,41 @@ $(document).ready(() => {
             "order": [[0, "desc"]],
         })
     }
+    if (document.location.href.includes("admin-societys")) {
+        var admin_settings = $('.table-admin-society').dataTable({
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": BASE_URL + "/api/admin-panel/list-admin-societys/",
+            "columnDefs": [
+                {
+                    targets: 0,
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    targets: -1,
+                    title: 'Actions',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return `   
+                            <div class="form-group row">
+                                <div class="col-3">
+                                    <span class="switch switch-outline switch-icon switch-primary">
+                                        <label>
+                                            <input type="checkbox" value="${row[0]}" ${data==="True"?checked="checked":""} name="society_is_active"/>
+                                            <span></span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    },
+                }
+            ],
+            "order": [[0, "desc"]],
+        })
+    }
+
+
 })
