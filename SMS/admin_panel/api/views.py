@@ -69,4 +69,19 @@ class ToggleSocietyIsActiveApiView(APIView):
         society.save()
         return Response({"message": "Data Updated Successfully"})
 
-    
+class DownloadAllFilesApiView(APIView):
+
+    def get(self, request, pk):
+        file_name = "ledger_file_"+User.objects.get(pk=pk).society_name
+        zf = zipfile.ZipFile('download.zip', 'w', zipfile.ZIP_DEFLATED)
+        zf.write("media/" + filename)
+        response = HttpResponse(zf, content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="download.zip"'
+        return response
+
+class DeleteSocietyApiView(APIView):
+
+    def delete(self, request, pk):
+        # society = User.objects.get(pk = request.POST.get('society_id'))
+        # society.delete()
+        return Response({"message": "Data Deleted Successfully"})

@@ -66,6 +66,89 @@ $(document).ready(() => {
         });
     });
 
+    // Delete All society data
+    $(document).on('click', '.delete-society', function (event) {
+        let url = this.href;
+        let table = $(this).closest("table").DataTable();   
+        const csrftoken = getCookie('csrftoken');
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: url,
+                    method: "delete",
+                    headers: {
+                        'X-CSRFTOKEN': csrftoken
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            "Deleted!",
+                            response.message,
+                            "success"
+                        ).then(function () {
+                            table.ajax.reload();
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire(
+                            "Not Deleted!",
+                            "Something went wrong",
+                            "error"
+                        )
+                    }
+                });
+            }
+        });
+    });
+
+
+    // Download Zip File of Society files
+    $(document).on('click', '.download-all-file', function (event) {
+        let url = this.href;
+        let table = $(this).closest("table").DataTable();   
+        const csrftoken = getCookie('csrftoken');
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: url,
+                    method: "get",
+                    headers: {
+                        'X-CSRFTOKEN': csrftoken
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            "Deleted!",
+                            response.message,
+                            "success"
+                        ).then(function () {
+                            table.ajax.reload();
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire(
+                            "Not Deleted!",
+                            "Something went wrong",
+                            "error"
+                        )
+                    }
+                });
+            }
+        });
+    });
+
     if (window.location.href.includes('upload-excel')) {
 
 
@@ -1134,7 +1217,8 @@ $(document).ready(() => {
                     orderable: false,
                     render: function (data, type, row, meta) {
                         return `   
-                            <div class="form-group row">
+                        <div class="form-group row">
+                                <a href="/api/admin-panel/download-all-file/${row[0]}" class="btn btn-sm btn-clean btn-icon download-all-file" title="Download File"><i class="fas fa-cloud-download-alt"></i></a><a href="/api/admin-panel/delete-society/${row[0]}/" class="btn btn-sm btn-clean btn-icon delete-society" title="Delete"><i class="far fa-trash-alt"></i></a>
                                 <div class="col-3">
                                     <span class="switch switch-outline switch-icon switch-primary">
                                         <label>
