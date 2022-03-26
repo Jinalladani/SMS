@@ -307,9 +307,9 @@ class IncomeExpenseLedgerCreateView(LoginRequiredMixin, CreateView):
             opening_balance_cash = cash.balance_amount
             opening_balance_bank = bank.balance_amount
 
-            bank.balance_amount = bank.balance_amount - amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount + amount
+            # bank.balance_amount = bank.balance_amount - amount
+            # bank.save()
+            cash.balance_amount = cash.balance_amount - amount
             cash.save()
 
             closing_balance_cash = cash.balance_amount
@@ -323,14 +323,47 @@ class IncomeExpenseLedgerCreateView(LoginRequiredMixin, CreateView):
             opening_balance_cash = cash.balance_amount
             opening_balance_bank = bank.balance_amount
 
-            bank.balance_amount = bank.balance_amount + amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount - amount
+            # bank.balance_amount = bank.balance_amount + amount
+            # bank.save()
+            cash.balance_amount = cash.balance_amount + amount
             cash.save()
 
             closing_balance_cash = cash.balance_amount
             closing_balance_bank = bank.balance_amount
             return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH DEPOSIT"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount + amount
+            bank.save()
+            # cash.balance_amount = cash.balance_amount - amount
+            # cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH WITHDRAWAL"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount - amount
+            bank.save()
+            # cash.balance_amount = cash.balance_amount + amount
+            # cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -340,7 +373,7 @@ class IncomeExpenseLedgerCreateView(LoginRequiredMixin, CreateView):
         try:
             opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank = self.add_balance_cash(self.request, transaction_type, amount, income_or_expense)
         except:
-            return self.form_invalid(form)
+            return self.form_invalid(form)  
         form.instance.opening_balance_cash = opening_balance_cash
         form.instance.closing_balance_cash = closing_balance_cash
         form.instance.opening_balance_bank = opening_balance_bank
@@ -420,33 +453,55 @@ class CashWithdrawalView(LoginRequiredMixin, View):
 
     def post(self, request):
         amount = int(request.POST.get("amount"))
-        bank = BalanceModel.objects.filter(user= request.user, account= "bank").first()
-        cash = BalanceModel.objects.filter(user= request.user, account= "cash").first()
+        bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+        cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
 
-        if(amount < bank.balance_amount):
-            opening_balance_cash = cash.balance_amount
-            opening_balance_bank = bank.balance_amount
+        # if(amount < bank.balance_amount):
+        opening_balance_cash = cash.balance_amount
+        opening_balance_bank = bank.balance_amount
 
-            bank.balance_amount = bank.balance_amount - amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount + amount
-            cash.save()
+        bank.balance_amount = bank.balance_amount - amount
+        bank.save()
+        closing_balance_cash = cash.balance_amount
+        closing_balance_bank = bank.balance_amount
+        IncomeExpenseLedgerModel.objects.create(
+            user= request.user,
+            date = request.POST.get('date'),
+            amount = amount,
+            from_or_to_account = "Cash",
+            type = "CASH WITHDRAWAL",
+            transaction_type = "Bank",
+            transaction_details = request.POST.get('transaction_details'),
+            opening_balance_cash = opening_balance_cash,
+            closing_balance_cash = closing_balance_cash,
+            opening_balance_bank = opening_balance_bank,
+            closing_balance_bank = closing_balance_bank
+        )
 
-            closing_balance_cash = cash.balance_amount
-            closing_balance_bank = bank.balance_amount
-            IncomeExpenseLedgerModel.objects.create(
-                user= request.user,
-                date = request.POST.get('date'),
-                amount = amount,
-                transaction_details = request.POST.get('transaction_details'),
-                opening_balance_cash = opening_balance_cash,
-                closing_balance_cash = closing_balance_cash,
-                opening_balance_bank = opening_balance_bank,
-                closing_balance_bank = closing_balance_bank
-            )
-            return redirect('income-expense-ledger')
-        else:
-            return redirect('income-expense-ledger')
+        opening_balance_cash = cash.balance_amount
+        opening_balance_bank = bank.balance_amount
+
+        cash.balance_amount = cash.balance_amount + amount
+        cash.save()
+
+        closing_balance_cash = cash.balance_amount
+        closing_balance_bank = bank.balance_amount
+        IncomeExpenseLedgerModel.objects.create(
+            user= request.user,
+            date = request.POST.get('date'),
+            amount = amount,
+            from_or_to_account = "Bank",
+            type = "CASH IN",
+            transaction_type = "Cash",
+            transaction_details = request.POST.get('transaction_details'),
+            opening_balance_cash = opening_balance_cash,
+            closing_balance_cash = closing_balance_cash,
+            opening_balance_bank = opening_balance_bank,
+            closing_balance_bank = closing_balance_bank
+        )
+        return redirect('income-expense-ledger')
+        # else:
+        #     return redirect('income-expense-ledger')
 
 class CashDepositView(LoginRequiredMixin, View):
 
@@ -457,33 +512,62 @@ class CashDepositView(LoginRequiredMixin, View):
 
     def post(self, request):
         amount = int(request.POST.get("amount"))
-        bank = BalanceModel.objects.filter(user= request.user, account= "bank").first()
-        cash = BalanceModel.objects.filter(user= request.user, account= "cash").first()
+        bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+        cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
 
-        if(amount < cash.balance_amount):
-            opening_balance_cash = cash.balance_amount
-            opening_balance_bank = bank.balance_amount
+        # if(amount < cash.balance_amount):
 
-            bank.balance_amount = bank.balance_amount + amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount - amount
-            cash.save()
+        opening_balance_cash = cash.balance_amount
+        opening_balance_bank = bank.balance_amount
 
-            closing_balance_cash = cash.balance_amount
-            closing_balance_bank = bank.balance_amount
-            IncomeExpenseLedgerModel.objects.create(
-                user= request.user,
-                date = request.POST.get('date'),
-                amount = amount,
-                transaction_details = request.POST.get('transaction_details'),
-                opening_balance_cash = opening_balance_cash,
-                closing_balance_cash = closing_balance_cash,
-                opening_balance_bank = opening_balance_bank,
-                closing_balance_bank = closing_balance_bank
-            )
-            return redirect('income-expense-ledger')
-        else:
-            return redirect('income-expense-ledger')
+        cash.balance_amount = cash.balance_amount - amount
+        cash.save()
+
+        closing_balance_cash = cash.balance_amount
+        closing_balance_bank = bank.balance_amount
+        IncomeExpenseLedgerModel.objects.create(
+            user= request.user,
+            date = request.POST.get('date'),
+            amount = amount,
+            from_or_to_account = "Bank",
+            type = "CASH OUT",
+            transaction_type = "Cash",
+            transaction_details = request.POST.get('transaction_details'),
+            opening_balance_cash = opening_balance_cash,
+            closing_balance_cash = closing_balance_cash,
+            opening_balance_bank = opening_balance_bank,
+            closing_balance_bank = closing_balance_bank
+        )
+
+
+        opening_balance_cash = cash.balance_amount
+        opening_balance_bank = bank.balance_amount
+
+        bank.balance_amount = bank.balance_amount + amount
+        bank.save()
+
+        closing_balance_cash = cash.balance_amount
+        closing_balance_bank = bank.balance_amount
+
+        IncomeExpenseLedgerModel.objects.create(
+            user= request.user,
+            date = request.POST.get('date'),
+            amount = amount,
+            from_or_to_account = "Cash",
+            type = "CASH DEPOSIT",
+            transaction_type = "Bank",
+            transaction_details = request.POST.get('transaction_details'),
+            opening_balance_cash = opening_balance_cash,
+            closing_balance_cash = closing_balance_cash,
+            opening_balance_bank = opening_balance_bank,
+            closing_balance_bank = closing_balance_bank
+        )
+
+
+
+        return redirect('income-expense-ledger')
+        # else:
+            # return redirect('income-expense-ledger')
 
 class UploadLedgerFileView(LoginRequiredMixin, CreateView):
     model = LedgerFile

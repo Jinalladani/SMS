@@ -254,6 +254,32 @@ $(document).ready(() => {
             window.location.href = BASE_URL + href;
         })
     }
+
+    if (window.location.href.includes("add-income-expense-ledger")){
+        $(document).on("change", "select[name=transaction_type]", (e) => {
+            let type = $(e.target).val()
+
+            switch (type) {
+                case "Cash":
+                    $("option[value='CASH DEPOSIT']").hide()
+                    $("option[value='CASH WITHDRAWAL']").hide()
+                    $("option[value='CASH IN']").show()
+                    $("option[value='CASH OUT']").show()
+                    break;
+                    
+                case "Bank":
+                    $("option[value='CASH IN']").hide()
+                    $("option[value='CASH OUT']").hide()
+                    $("option[value='CASH DEPOSIT']").show()
+                    $("option[value='CASH WITHDRAWAL']").show()
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+    }
+
 });
 
 $(document).ready(() => {

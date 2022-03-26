@@ -209,9 +209,9 @@ class ImportExcelApiView(APIView):
             opening_balance_cash = cash.balance_amount
             opening_balance_bank = bank.balance_amount
 
-            bank.balance_amount = bank.balance_amount - amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount + amount
+            # bank.balance_amount = bank.balance_amount - amount
+            # bank.save()
+            cash.balance_amount = cash.balance_amount - amount
             cash.save()
 
             closing_balance_cash = cash.balance_amount
@@ -225,14 +225,47 @@ class ImportExcelApiView(APIView):
             opening_balance_cash = cash.balance_amount
             opening_balance_bank = bank.balance_amount
 
-            bank.balance_amount = bank.balance_amount + amount
-            bank.save()
-            cash.balance_amount = cash.balance_amount - amount
+            # bank.balance_amount = bank.balance_amount + amount
+            # bank.save()
+            cash.balance_amount = cash.balance_amount + amount
             cash.save()
 
             closing_balance_cash = cash.balance_amount
             closing_balance_bank = bank.balance_amount
             return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH DEPOSIT"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount + amount
+            bank.save()
+            # cash.balance_amount = cash.balance_amount - amount
+            # cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
+        elif(income_or_expense == "CASH WITHDRAWAL"):
+            bank = BalanceModel.objects.filter(user= request.user, account= "Bank").first()
+            cash = BalanceModel.objects.filter(user= request.user, account= "Cash").first()
+
+            opening_balance_cash = cash.balance_amount
+            opening_balance_bank = bank.balance_amount
+
+            bank.balance_amount = bank.balance_amount - amount
+            bank.save()
+            # cash.balance_amount = cash.balance_amount + amount
+            # cash.save()
+
+            closing_balance_cash = cash.balance_amount
+            closing_balance_bank = bank.balance_amount
+            return opening_balance_cash, closing_balance_cash, opening_balance_bank, closing_balance_bank
+
     
     def create_if_not_exist_category(self, category_type, ele):
         if category_type == "Income":
