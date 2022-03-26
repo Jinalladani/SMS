@@ -10,4 +10,6 @@ urlpatterns = [
     path('update-admin-settings/<int:pk>', views.UpdateAdminSettingView.as_view(), name='update-admin-settings'),
     
     path('admin-societys/', views.AdminSocietysView.as_view(), name='admin-societys'),
+    path('download-all-file/<int:pk>', views.DownloadAllFilesApiView.as_view(), name='download-all-file'),
+
 ]

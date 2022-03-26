@@ -6,8 +6,12 @@ from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
+from django.conf import settings
+from django.http import HttpResponse, Http404
+import shutil
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
 
 class AdminSettingsListJSONView(BaseDatatableView):
     model = SettingModel
@@ -68,17 +72,6 @@ class ToggleSocietyIsActiveApiView(APIView):
         society.is_active = not society.is_active
         society.save()
         return Response({"message": "Data Updated Successfully"})
-
-class DownloadAllFilesApiView(APIView):
-
-    def get(self, request, pk):
-        file_name = "ledger_file_"+User.objects.get(pk=pk).society_name
-        zf = zipfile.ZipFile('download.zip', 'w', zipfile.ZIP_DEFLATED)
-        zf.write("media/" + filename)
-        response = HttpResponse(zf, content_type='application/force-download')
-        response['Content-Disposition'] = 'attachment; filename="download.zip"'
-        return response
-
 class DeleteSocietyApiView(APIView):
 
     def delete(self, request, pk):

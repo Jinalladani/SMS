@@ -34,6 +34,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 from django.views.generic import CreateView, UpdateView
 from admin_panel.models import SettingModel
+from django.http import HttpResponse, Http404
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -149,3 +150,17 @@ class AdminSocietysView(View):
     def get(self, request):
         context = {}
         return render(request, "admin-panel/admin-societys.html", context)
+
+
+class DownloadAllFilesApiView(View):
+
+    def get(self, request, pk):
+        try:
+            # zip_path = shutil.make_archive(settings.MEDIA_ROOT + '\\zip\\' + "ledger_file_"+User.objects.get(pk=pk).society_name, "zip", settings.MEDIA_ROOT + '\\' + "ledger_file_"+User.objects.get(pk=pk).society_name)
+            zip_file = open("D:\Videos\work\Bonrix\Phase 2\SMS\SMS\media\zip\ledger_file_Shreeji Charan Society.zip", 'r', encoding="utf8")
+            response = HttpResponse(zip_file, content_type='application/force-download')
+            response['Content-Disposition'] = 'attachment; filename="%s"' % 'D:\Videos\work\Bonrix\Phase 2\SMS\SMS\media\zip\ledger_file_Shreeji Charan Society.zip'
+            return response
+
+        except Exception as e:
+            raise Http404

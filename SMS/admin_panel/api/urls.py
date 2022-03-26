@@ -9,6 +9,5 @@ urlpatterns = [
  
     path('list-admin-societys/', views.AdminSocietyListJSONView.as_view(), name='list-admin-societys'),
     path('toggle-society-status/', views.ToggleSocietyIsActiveApiView.as_view(), name='toggle-society-status'),
-    path('download-all-file/<int:pk>', views.DownloadAllFilesApiView.as_view(), name='download-all-file'),
     path('delete-society/<int:pk>', views.DeleteSocietyApiView.as_view(), name='delete-society'),
 ]
