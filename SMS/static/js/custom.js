@@ -66,6 +66,74 @@ $(document).ready(() => {
         });
     });
 
+    // Delete All society data
+    $(document).on('click', '.delete-society', function (event) {
+        let url = this.href;
+        let table = $(this).closest("table").DataTable();   
+        const csrftoken = getCookie('csrftoken');
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: url,
+                    method: "delete",
+                    headers: {
+                        'X-CSRFTOKEN': csrftoken
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            "Deleted!",
+                            response.message,
+                            "success"
+                        ).then(function () {
+                            table.ajax.reload();
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire(
+                            "Not Deleted!",
+                            "Something went wrong",
+                            "error"
+                        )
+                    }
+                });
+            }
+        });
+    });
+
+
+    // Download Zip File of Society files
+    $(document).on('click', '.downdsload-all-file', function (event) {
+        let url = this.href;
+        let table = $(this).closest("table").DataTable();   
+        const csrftoken = getCookie('csrftoken');
+        event.preventDefault();
+        $.ajax({
+            url: url,
+            method: "get",
+            headers: {
+                'X-CSRFTOKEN': csrftoken
+            },
+            success: function (response) {
+                debugger;
+                swal.fire("Message", response.message)
+            },
+            error: function (error) {
+                Swal.fire(
+                    "Not Deleted!",
+                    "Something went wrong",
+                    "error"
+                )
+            }
+        });
+    });
+
     if (window.location.href.includes('upload-excel')) {
 
 
@@ -186,6 +254,32 @@ $(document).ready(() => {
             window.location.href = BASE_URL + href;
         })
     }
+
+    if (window.location.href.includes("add-income-expense-ledger")){
+        $(document).on("change", "select[name=transaction_type]", (e) => {
+            let type = $(e.target).val()
+
+            switch (type) {
+                case "Cash":
+                    $("option[value='CASH DEPOSIT']").hide()
+                    $("option[value='CASH WITHDRAWAL']").hide()
+                    $("option[value='CASH IN']").show()
+                    $("option[value='CASH OUT']").show()
+                    break;
+                    
+                case "Bank":
+                    $("option[value='CASH IN']").hide()
+                    $("option[value='CASH OUT']").hide()
+                    $("option[value='CASH DEPOSIT']").show()
+                    $("option[value='CASH WITHDRAWAL']").show()
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+    }
+
 });
 
 $(document).ready(() => {
@@ -911,6 +1005,41 @@ $(document).ready(() => {
             income_expense_ledger.api().column(2).search(JSON.stringify($(event.target).serializeArray())).draw()
         })
     }
+
+    if (document.location.href.includes("admin-societys")) {
+        $(document).on("change", "input[name=society_is_active]", (e) => {
+            let is_active = $(e.target).is(":checked");
+            let society_id = $(e.target).val();
+            const csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                url: "/api/admin-panel/toggle-society-status/",
+                method: "POST",
+                data: {
+                    society_id,
+                    is_active
+                },
+                headers: {
+                    'X-CSRFTOKEN': csrftoken
+                },
+                success: (response) => {
+                    Swal.fire(
+                        "Updated!",
+                        response.message,
+                        "success"
+                    );
+                },
+                error: (error) => {
+                    Swal.fire(
+                        "Not Updated!",
+                        "Something went wrong",
+                        "error"
+                    )
+                    window.location.reload()
+                }
+            })
+        })
+    }
 })
 
 $(document).ready(() => {
@@ -1052,4 +1181,71 @@ $(document).ready(() => {
                 break;
         }
     }
+})
+
+
+$(document).ready(() => {
+
+    if (document.location.href.includes("admin-settings")) {
+        var admin_settings = $('.table-admin-settings').dataTable({
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": BASE_URL + "/api/admin-panel/list-admin-settings/",
+            "columnDefs": [
+                {
+                    targets: 0,
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    targets: -1,
+                    title: 'Actions',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return '<a href="/admin-panel/update-admin-settings/' + row[0] + '" class="btn btn-sm btn-clean btn-icon" title="Edit details"><i class="far fa-edit"></i></a><a href="/api/admin-panel/admin-settings/delete/' + row[0] + '/" class="btn btn-sm btn-clean btn-icon delete-record" title="Delete"><i class="far fa-trash-alt"></i></a>';
+                    },
+                }
+            ],
+            "order": [[0, "desc"]],
+        })
+    }
+    if (document.location.href.includes("admin-societys")) {
+        var admin_settings = $('.table-admin-society').dataTable({
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": BASE_URL + "/api/admin-panel/list-admin-societys/",
+            "columnDefs": [
+                {
+                    targets: 0,
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    targets: -1,
+                    title: 'Actions',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return `   
+                        <div class="form-group row">
+                                <a href="/admin-panel/download-all-file/${row[0]}" class="btn btn-sm btn-clean btn-icon download-all-file" title="Download File"><i class="fas fa-cloud-download-alt"></i></a><a href="/api/admin-panel/delete-society/${row[0]}/" class="btn btn-sm btn-clean btn-icon delete-society" title="Delete"><i class="far fa-trash-alt"></i></a>
+                                <div class="col-3">
+                                    <span class="switch switch-outline switch-icon switch-primary">
+                                        <label>
+                                            <input type="checkbox" value="${row[0]}" ${data==="True"?checked="checked":""} name="society_is_active"/>
+                                            <span></span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    },
+                }
+            ],
+            "order": [[0, "desc"]],
+        })
+    }
+
+
 })

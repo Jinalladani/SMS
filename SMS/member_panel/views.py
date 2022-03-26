@@ -13,8 +13,10 @@ from accounting.models import SocietyMemberDetailsModel
 from authentication.models import User
 from member_panel.forms import MemberLoginForm
 from member_panel.models import OtpModel
+from admin_panel.utils  import get_credentials
 from accounting.models import SocietyMemberDetailsModel, \
     BalanceModel, IncomeExpenseLedgerModel, IncomeCategoryModel, ExpenseCategoryModel, MemberVenderDetailModel
+
 
 from member_panel.mixins import MemberLoginRequired, RedirectIfLoggedIn
 
@@ -101,7 +103,7 @@ class MemberLoginView(RedirectIfLoggedIn, View):
             try:
                 if Member:
                     otp = randint(100000, 999999)
-                    requests.get(settings.SMSURL.format(phone_no= mobile_number, otp= otp))
+                    requests.get(get_credentials("SMSURL").format(phone_no= mobile_number, otp= otp))
                     obj, created = OtpModel.objects.update_or_create(mobile_number= mobile_number, defaults={"otp": otp})
                     request.session['mobile_number'] = mobile_number.raw_input
                     return redirect("member-otp-verification")

@@ -1,0 +1,60 @@
+{% extends 'admin-panel/base.html' %}
+{% block title %}
+<title>Dashboard</title>
+{% endblock title %}
+{% block subheader %}
+<!--begin::Subheader-->
+<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+    <div
+        class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+        <!--begin::Info-->
+        <div class="d-flex align-items-center flex-wrap mr-2">
+            <!--begin::Page Title-->
+            <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+            <!--end::Page Title-->
+        </div>
+        <!--end::Info-->
+    </div>
+</div>
+<!--end::Subheader-->
+{% endblock subheader %}
+{% block content %}
+<div class="row gutter-b">
+    <div class="col-md-3">
+        <div class="card shadow p-5">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    List : {{all_list}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow p-5">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    Active : {{active}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow p-5">
+            <div class="card-title text-center h3 p-2 m-0 underline">
+                <u>No. of Society</u>
+            </div>
+            <div class="card-body p-1">
+                <div class="h3 text-center">
+                    Deactive : {{deactive}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'authentication',
     'accounting',
     'django_extensions',
-    'member_panel'
+    'member_panel',
+    "admin_panel"
 ]
 
 

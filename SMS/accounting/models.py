@@ -84,7 +84,9 @@ class IncomeExpenseLedgerModel(TimeStampedModel):
         ("Income", "Income"),
         ("Expense", "Expense"),
         ("CASH OUT", "CASH OUT"),
-        ("CASH IN", "CASH IN")
+        ("CASH IN", "CASH IN"),
+        ("CASH DEPOSIT", "CASH DEPOSIT"),
+        ("CASH WITHDRAWAL", "CASH WITHDRAWAL"),
     )
     
     user = models.ForeignKey('authentication.User', related_name='IncomeExpenseLedger', on_delete=models.CASCADE, blank=True, null=True)
